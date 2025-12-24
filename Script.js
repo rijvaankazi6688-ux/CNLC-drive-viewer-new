@@ -19,12 +19,21 @@ function loadFolder(folderId) {
   list.innerHTML = `<p class="col-span-full text-center dark:text-white">Loading...</p>`;
   backBtn.classList.toggle("hidden", folderStack.length <= 1);
 
-  fetch(`https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${API_KEY}&fields=files(id,name,mimeType)`)
-    .then(res => res.json())
-    .then(data => {
-      currentItems = data.files;
-      renderItems(currentItems);
-    });
+  fetch(
+    `https://www.googleapis.com/drive/v3/files` +
+    `?q='${folderId}'+in+parents` +
+    `&supportsAllDrives=true` +
+    `&includeItemsFromAllDrives=true` +
+    `&fields=files(id,name,mimeType)` +
+    `&key=${API_KEY}`
+  )
+  .then(res => res.json())
+  .then(data => {
+    console.log("Drive Data:", data);
+    currentItems = data.files || [];
+    renderItems(currentItems);
+  })
+  .catch(err => console.error("Drive Error:", err));
 }
 
 function renderItems(items) {
@@ -95,4 +104,5 @@ function toggleDark() {
 
 // Initial load
 loadFolder(ROOT_FOLDER_ID);
+
 
