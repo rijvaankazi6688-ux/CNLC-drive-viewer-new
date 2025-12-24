@@ -17,8 +17,7 @@ function icon(type) {
 }
 
 function loadFolder(folderId) {
-  list.innerHTML = `<p class="col-span-full text-center dark:text-white">Loading...</p>`;
-  backBtn.classList.toggle("hidden", folderStack.length <= 1);
+  document.body.innerHTML += "<p>JS is running</p>";
 
   fetch(
     `https://www.googleapis.com/drive/v3/files` +
@@ -30,12 +29,13 @@ function loadFolder(folderId) {
   )
   .then(res => res.json())
   .then(data => {
-    console.log("Drive Data:", data);
-    currentItems = data.files || [];
-    renderItems(currentItems);
+    document.body.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
   })
-  .catch(err => console.error("Drive Error:", err));
+  .catch(err => {
+    document.body.innerHTML += `<pre>${err}</pre>`;
+  });
 }
+
 
 function renderItems(items) {
   list.innerHTML = "";
@@ -105,6 +105,7 @@ function toggleDark() {
 
 // Initial load
 loadFolder(ROOT_FOLDER_ID);
+
 
 
 
